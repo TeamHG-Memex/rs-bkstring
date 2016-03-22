@@ -1,0 +1,8 @@
+[package]
+name = "rs-bkstring"
+version = "0.1.0"
+authors = ["Brian Mackintosh <bcmackintosh@gmail.com>"]
+
+[dependencies]
+rand = "*"
+time = "*"
