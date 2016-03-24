@@ -5,4 +5,3 @@ authors = ["Brian Mackintosh <bcmackintosh@gmail.com>"]
 
 [dependencies]
 rand = "*"
-time = "*"
