@@ -1,7 +1,29 @@
 use std::cmp::min;
+use std::collections::HashSet;
 
 const MAX_PERCENT_DIST: usize = 100;
 const MAX_HEX_HAM_DIST: usize = 256;
+
+pub fn jac_dist(first: String, second: String) -> usize {
+    let len1 = first.chars().count();
+    let len2 = second.chars().count();
+
+    if len1 == 0  && len2 == 0 {
+        return 0;
+    }
+
+    if len1 == 0 || len2 == 0 {
+        return MAX_PERCENT_DIST;
+    }
+
+    let set1: HashSet<_> = first.chars().collect();
+    let set2: HashSet<_> = second.chars().collect();
+
+    let intersect = set1.intersection(&set2).count();
+    let union = set1.union(&set2).count();
+
+    return MAX_PERCENT_DIST - (MAX_PERCENT_DIST * intersect) / union;
+}
 
 pub fn mod_j_dist(first: String, second: String) -> usize {
     let len1 = first.chars().count();
@@ -216,6 +238,17 @@ fn l_dist_test_unicode() {
     assert_eq!(l_dist("johndoe1".to_string(), "johndoe\u{263a}\u{263a}".to_string()), 2);
     assert_eq!(l_dist("johndoe\u{263a}".to_string(), "johndoe1".to_string()), 1);
 }
+
+#[test]
+fn jac_dist_test() {
+    assert_eq!(jac_dist("foo".to_string(), "bar".to_string()), 100);
+    assert_eq!(jac_dist("bar".to_string(), "ba".to_string()), 34);
+    assert_eq!(jac_dist("bar".to_string(), "baz".to_string()), 50);
+    assert_eq!(jac_dist("GG".to_string(), "GGGG".to_string()), 0);
+    assert_eq!(jac_dist("GGGG".to_string(), "GG".to_string()), 0);
+    assert_eq!(jac_dist("fooba 1234".to_string(), "fooba1234".to_string()), 12);
+}
+
 
 #[test]
 fn mod_j_dist_test() {

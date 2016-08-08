@@ -4,8 +4,7 @@ use std::cmp::min;
 use bknode::BkNode;
 use bkdist::Metric;
 
-use rand::{thread_rng, Rng};
-use test::Bencher;
+// use rand::{thread_rng, Rng};
 
 pub type Dist = fn(String, String) -> usize;
 
@@ -119,52 +118,4 @@ fn search_test() {
 
         assert!(list.is_empty());
     }
-}
-
-#[bench]
-fn bench_add(b: &mut Bencher) {
-    let len = 1000;
-    let mut bk = BkTree::new(None);
-    let mut names: Vec<String> = vec![];
-
-    let mut i = 0;
-
-    while i < len {
-        let s = thread_rng()
-            .gen_ascii_chars()
-            .take(6)
-            .collect::<String>();
-        names.push(s.clone());
-
-        i += 1;
-    }
-
-    b.iter(|| {
-        bk.add_list(names.to_owned());
-    });
-}
-
-#[bench]
-fn bench_default(b: &mut Bencher) {
-    let len = 1000;
-    let mut bk = BkTree::new(None);
-    let mut names: Vec<String> = vec![];
-
-    let mut i = 0;
-
-    while i < len {
-        let s = thread_rng()
-            .gen_ascii_chars()
-            .take(6)
-            .collect::<String>();
-        names.push(s.clone());
-
-        i += 1;
-    }
-
-    bk.add_list(names.to_owned());
-
-    b.iter(|| {
-        bk.search(names[0].clone(), 2);
-    });
 }

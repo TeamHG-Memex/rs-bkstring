@@ -1,4 +1,4 @@
-#![feature(test)]
+// #![feature(test)]
 // #![feature(libc)]
 
 // #![feature(plugin)]
@@ -6,18 +6,18 @@
 
 // #[macro_use] extern crate cpython;
 
-mod bktree;
-mod bknode;
-mod bkgraph;
-mod bkdist;
+pub mod bktree;
+pub mod bknode;
+pub mod bkgraph;
+pub mod bkdist;
 
-use bktree::*;
-use bknode::*;
-use bkgraph::*;
-use bkdist::*;
+// use bktree::*;
+// use bknode::*;
+// use bkgraph::*;
+// use bkdist::*;
 
-extern crate rand;
-extern crate test;
+// extern crate rand;
+// extern crate test;
 // extern crate libc;
 // use std::ffi::CStr;
 // use std::os::raw::c_char;

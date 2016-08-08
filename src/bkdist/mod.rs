@@ -14,6 +14,14 @@ pub struct _Metric {
 }
 
 impl _Metric {
+    pub extern fn jac_dist() -> _Metric {
+        _Metric {
+            function: jac_dist,
+            diff: j_diff,
+            len: word_len
+        }
+    }
+
     pub extern fn mod_j_dist() -> _Metric {
         _Metric {
             function: mod_j_dist,
@@ -72,6 +80,13 @@ impl _Metric {
 }
 
 pub type Metric = _Metric;
+
+#[test]
+fn make_jac_dist() {
+    let foo = Metric::jac_dist();
+    assert_eq!((foo.function)("".to_string(), "".to_string()), 0);
+    assert_eq!((foo.diff)(0, 0, 0), 0);
+}
 
 #[test]
 fn make_mod_j_dist() {
