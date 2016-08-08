@@ -3,5 +3,9 @@ name = "rs-bkstring"
 version = "0.1.0"
 authors = ["Brian Mackintosh <bcmackintosh@gmail.com>"]
 
+[lib]
+name = "bkstring"
+crate-type = ["dylib"]
+
 [dependencies]
 rand = "*"

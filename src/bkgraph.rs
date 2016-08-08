@@ -4,44 +4,48 @@ use bkdist::Metric;
 use std::collections::HashMap;
 
 type Diff = fn(usize, usize, usize) -> usize;
+type Len = fn(String) -> usize;
 
 pub struct _BkGraph {
     trees: HashMap<usize, BkTree>,
     metric: Metric,
-    diff: Diff
+    diff: Diff,
+    len: Len
 }
 
 impl _BkGraph {
-    pub fn new(metric: Option<Metric>) -> _BkGraph {
+    pub extern fn new(metric: Option<Metric>) -> _BkGraph {
         match metric {
             Some(metric) => _BkGraph {
                 trees: HashMap::new(),
                 metric: metric.clone(),
-                diff: metric.diff
+                diff: metric.diff,
+                len: metric.len
             },
             None => _BkGraph {
                 trees: HashMap::new(),
                 metric: Metric::l_dist(),
-                diff: Metric::l_dist().diff
+                diff: Metric::l_dist().diff,
+                len: Metric::l_dist().len
             }
         }
     }
 
-    pub fn add(&mut self, word: String) {
-        let len = word.chars().count();
+    pub extern fn add(&mut self, word: String) {
+        let len = (self.len)(word.clone());
 
         let mut tree = self.trees.entry(len).or_insert(BkTree::new(Some(self.metric.clone())));
-        tree.add(word);
+        tree.add(word.clone());
     }
 
-    pub fn add_list(&mut self, list: Vec<String>) {
+    pub extern fn add_list(&mut self, list: Vec<String>) {
         for word in list {
             self.add(word);
         }
     }
 
-    pub fn search(&self, word: String, dist: usize) -> Vec<String> {
-        let len = word.chars().count();
+    pub extern fn search(&self, word: String, dist: usize) -> Vec<String> {
+        let len = (self.len)(word.clone());
         let mut results: Vec<String> = vec![];
 
         for key in self.trees.keys() {
@@ -52,7 +56,7 @@ impl _BkGraph {
         return results;
     }
 
-    pub fn variance_search(&self, word: String, dist: usize, variance: usize) -> Vec<String> {
+    pub extern fn variance_search(&self, word: String, dist: usize, variance: usize) -> Vec<String> {
         let len = word.chars().count();
         let mut results: Vec<String> = vec![];
 

@@ -16,7 +16,7 @@ pub struct _BkTree {
 }
 
 impl _BkTree {
-    pub fn new(func: Option<Metric>) -> _BkTree {
+    pub extern fn new(func: Option<Metric>) -> _BkTree {
         match func {
             Some(func) => _BkTree {
                 _root: Default::default(),
@@ -29,11 +29,11 @@ impl _BkTree {
         }
     }
 
-    pub fn add(&mut self, word: String) {
+    pub extern fn add(&mut self, word: String) {
         self._root.add(word, self.dist);
     }
 
-    pub fn add_list(&mut self, list: Vec<String>) {
+    pub extern fn add_list(&mut self, list: Vec<String>) {
         for word in list {
             self.add(word);
         }
@@ -62,7 +62,7 @@ impl _BkTree {
         }
     }
 
-    pub fn search(&self, word: String, dist: usize) -> Vec<String> {
+    pub extern fn search(&self, word: String, dist: usize) -> Vec<String> {
         let mut results: Vec<String> = vec![];
 
         self.r_search(&self._root, word.clone(), dist, &mut results);

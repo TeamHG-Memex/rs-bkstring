@@ -1,56 +1,9 @@
-use std::cmp::{min, max};
+use std::cmp::min;
 
 const MAX_PERCENT_DIST: usize = 100;
 const MAX_HEX_HAM_DIST: usize = 256;
 
-#[derive(Clone)]
-pub struct _Metric {
-    pub function: fn(String, String) -> usize,
-    pub diff: fn(usize, usize, usize) -> usize
-}
-
-impl _Metric {
-    pub fn mod_j_dist() -> _Metric {
-        _Metric {
-            function: mod_j_dist,
-            diff: mod_j_diff
-        }
-    }
-
-    pub fn l_dist() -> _Metric {
-        _Metric {
-            function: l_dist,
-            diff: l_diff
-        }
-    }
-
-    pub fn jaro_dist() -> _Metric {
-        _Metric {
-            function: jaro_dist,
-            diff: jaro_diff
-        }
-    }
-
-    pub fn hex_ham_dist() -> _Metric {
-        _Metric {
-            function: hex_ham_dist,
-            diff: hex_ham_diff
-        }
-    }
-}
-
-fn mod_j_diff(length: usize, key: usize, dist: usize) -> usize {
-    let more = max(length, key);
-    let less = min(length, key);
-
-    if more + dist == 0 {
-        return 0;
-    }
-
-    min(MAX_PERCENT_DIST - (MAX_PERCENT_DIST as f64 * (less - dist) as f64 / (more + dist) as f64) as usize, MAX_PERCENT_DIST)
-}
-
-fn mod_j_dist(first: String, second: String) -> usize {
+pub fn mod_j_dist(first: String, second: String) -> usize {
     let len1 = first.chars().count();
     let mut sec_copy = second.clone().to_string();
     let len2 = sec_copy.chars().count();
@@ -80,15 +33,7 @@ fn mod_j_dist(first: String, second: String) -> usize {
     return MAX_PERCENT_DIST - (MAX_PERCENT_DIST * intersect) / union;
 }
 
-fn l_diff(length: usize, key: usize, dist: usize) -> usize {
-    if length > key {
-        return length - key + dist;
-    }
-
-    key - length + dist
-}
-
-fn l_dist(fir: String, sec: String) -> usize {
+pub fn l_dist(fir: String, sec: String) -> usize {
     let first = fir.as_str();
     let second = sec.as_str();
     let first_len: usize = first.chars().count();
@@ -127,18 +72,7 @@ fn l_dist(fir: String, sec: String) -> usize {
     return dist[first_len][second_len];
 }
 
-fn jaro_diff(length: usize, key: usize, dist: usize) -> usize {
-    let more = max(length, key);
-    let less = min(length, key);
-
-    if more == 0 {
-        return dist;
-    }
-
-    dist + (dist as f64 / 3f64 * less as f64 / more as f64) as usize
-}
-
-fn jaro_dist(first: String, second: String) -> usize {
+pub fn jaro_dist(first: String, second: String) -> usize {
     let len1 = first.chars().count();
     let len2 = second.chars().count();
 
@@ -216,12 +150,7 @@ fn jaro_dist(first: String, second: String) -> usize {
     return dist.ceil() as usize;
 }
 
-#[allow(unused)]
-fn hex_ham_diff(length: usize, key: usize, dist: usize) -> usize {
-    dist
-}
-
-fn hex_ham_dist(first: String, second: String) -> usize {
+pub fn hex_ham_dist(first: String, second: String) -> usize {
     let len1 = first.len();
     let len2 = second.len();
 
@@ -272,8 +201,6 @@ fn hex_ham_dist(first: String, second: String) -> usize {
 
     return sum;
 }
-
-pub type Metric = _Metric;
 
 #[test]
 fn l_dist_test_samples() {
@@ -356,32 +283,4 @@ fn hex_ham_dist_test_capital() {
     assert_eq!(hex_ham_dist("0590EB7E1129FA5B".to_string(), "D7BBCB6C3A369040".to_string()), 28);
     assert_eq!(hex_ham_dist("0590EB7E1129FA5B".to_string(), "d7bbcb6c3a369040".to_string()), 28);
     assert_eq!(hex_ham_dist("0590eb7e1129fa5b".to_string(), "D7BBCB6C3A369040".to_string()), 28);
-}
-
-#[test]
-fn make_mod_j_dist() {
-    let foo = Metric::mod_j_dist();
-    assert_eq!((foo.function)("".to_string(), "".to_string()), 0);
-    assert_eq!((foo.diff)(0, 0, 0), 0);
-}
-
-#[test]
-fn make_l_dist() {
-    let foo = Metric::l_dist();
-    assert_eq!((foo.function)("".to_string(), "".to_string()), 0);
-    assert_eq!((foo.diff)(0, 0, 0), 0);
-}
-
-#[test]
-fn make_jaro_dist() {
-    let foo = Metric::jaro_dist();
-    assert_eq!((foo.function)("".to_string(), "".to_string()), 0);
-    assert_eq!((foo.diff)(0, 0, 0), 0);
-}
-
-#[test]
-fn make_hex_ham_dist_dist() {
-    let foo = Metric::hex_ham_dist();
-    assert_eq!((foo.function)("".to_string(), "".to_string()), 0);
-    assert_eq!((foo.diff)(0, 0, 0), 0);
 }
