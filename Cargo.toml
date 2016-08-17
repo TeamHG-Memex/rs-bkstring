@@ -4,8 +4,9 @@ version = "0.1.0"
 authors = ["Brian Mackintosh <bcmackintosh@gmail.com>"]
 
 [lib]
-name = "bkstring"
+name = "libbkstring"
 crate-type = ["dylib"]
 
 [dependencies]
+cpython = { git = "https://github.com/dgrunwald/rust-cpython.git" }
 rand = "*"
