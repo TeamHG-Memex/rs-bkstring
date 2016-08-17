@@ -10,6 +10,5 @@ setup(
         'build_rust': build_rust_cmdclass('../Cargo.toml'),
         'install_lib': install_lib_including_rust,
     },
-    packages = ['bktree'],
     zip_safe=False
 )
