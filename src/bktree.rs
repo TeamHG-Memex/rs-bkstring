@@ -2,43 +2,41 @@ use std::default::Default;
 use std::cmp::min;
 
 use bknode::BkNode;
-use bkdist::Metric;
+use dist::*;
 
-// use rand::{thread_rng, Rng};
-
-pub type Dist = fn(String, String) -> usize;
+pub type Dist<T> = fn(Vec<T>, Vec<T>) -> usize;
 
 #[derive(Clone)]
-pub struct _BkTree {
-    _root: BkNode,
-    dist: Dist
+pub struct _BkTree<T> {
+    _root: BkNode<T>,
+    dist: Dist<T>
 }
 
-impl _BkTree {
-    pub extern fn new(func: Option<Metric>) -> _BkTree {
+impl<T: Eq + Clone + Sized> _BkTree<T> {
+    pub extern fn new(func: Option<Dist<T>>) -> _BkTree<T> {
         match func {
             Some(func) => _BkTree {
                 _root: Default::default(),
-                dist: func.function
+                dist: func
             },
             None => _BkTree {
                 _root: Default::default(),
-                dist: Metric::l_dist().function
+                dist: levenshtein_dist
             }
         }
     }
 
-    pub extern fn add(&mut self, word: String) {
+    pub extern fn add(&mut self, word: Vec<T>) {
         self._root.add(word, self.dist);
     }
 
-    pub extern fn add_list(&mut self, list: Vec<String>) {
+    pub extern fn add_list(&mut self, list: Vec<Vec<T>>) {
         for word in list {
             self.add(word);
         }
     }
 
-    fn r_search(&self, node: &BkNode, word: String, dist: usize, s_list: &mut Vec<String>) {
+    fn r_search(&self, node: &BkNode<T>, word: Vec<T>, dist: usize, s_list: &mut Vec<Vec<T>>) {
         match node.word {
             Some(ref curr_word) => {
                 let curr_dist = (self.dist)(curr_word.to_owned(), word.to_owned());
@@ -61,61 +59,91 @@ impl _BkTree {
         }
     }
 
-    pub extern fn search(&self, word: String, dist: usize) -> Vec<String> {
-        let mut results: Vec<String> = vec![];
+    pub extern fn search(&self, word: Vec<T>, dist: usize) -> Vec<Vec<T>> {
+        let mut results: Vec<Vec<T>> = vec![];
 
         self.r_search(&self._root, word.clone(), dist, &mut results);
         return results;
     }
 }
 
-pub type BkTree = _BkTree;
-
-#[test]
-fn add_test() {
-    let mut b: BkTree = BkTree::new(None);
-
-    b.add("foo".to_string());
-    assert_eq!(b._root.word, Some("foo".to_string()));
-
-    b.add("bar".to_string());
-    assert_eq!(b._root.children[3].word, Some("bar".to_string()));
-}
+pub type BkTree<T> = _BkTree<T>;
 
 #[test]
 fn add_list_test() {
-    let mut b: BkTree = BkTree::new(None);
-    let list = vec!["foo".to_string(), "bar".to_string()];
+    let mut b: BkTree<char> = BkTree::new(None);
+    let list = vec!["foo".chars().collect(), "bar".chars().collect()];
 
     b.add_list(list);
-    assert_eq!(b._root.children[3].word, Some("bar".to_string()));
+    assert_eq!(b._root.children[3].word, Some("bar".chars().collect()));
 }
 
 #[test]
 fn search_test() {
-    let mut b: BkTree = BkTree::new(None);
+    let mut b: BkTree<char> = BkTree::new(None);
 
-    b.add("foo".to_string());
-    b.add("food".to_string());
-    b.add("foe".to_string());
+    b.add("foo".chars().collect());
+    b.add("food".chars().collect());
+    b.add("foe".chars().collect());
 
     {
-        let list = b.search("foo".to_string(), 0);
+        let list = b.search("foo".chars().collect(), 0);
 
-        assert!(list.contains(&"foo".to_string()));
+        assert!(list.contains(&"foo".chars().collect()));
     }
 
     {
-        let list = b.search("foo".to_string(), 1);
+        let list = b.search("foo".chars().collect(), 1);
 
-        assert!(list.contains(&"foo".to_string()));
-        assert!(list.contains(&"food".to_string()));
-        assert!(list.contains(&"foe".to_string()));
+        assert!(list.contains(&"foo".chars().collect()));
+        assert!(list.contains(&"food".chars().collect()));
+        assert!(list.contains(&"foe".chars().collect()));
     }
 
     {
-        let list = b.search("bar".to_string(), 1);
+        let list = b.search("bar".chars().collect(), 1);
 
         assert!(list.is_empty());
     }
+}
+
+#[test]
+fn default_dist_add_test() {
+    let mut b: BkTree<char> = BkTree::new(None);
+
+    b.add("foo".chars().collect());
+    assert_eq!(b._root.word, Some("foo".chars().collect()));
+
+    b.add("bar".chars().collect());
+    assert_eq!(b._root.children[3].word, Some("bar".chars().collect()));
+}
+
+#[test]
+fn jaccard_dist_add_test() {
+    let mut b: BkTree<char> = BkTree::new(Some(jaccard_dist));
+    b.add("foo".chars().collect());
+    assert_eq!(b._root.word, Some("foo".chars().collect()));
+
+    b.add("bar".chars().collect());
+    assert_eq!(b._root.children[100].word, Some("bar".chars().collect()));
+}
+
+#[test]
+fn modified_jaccard_dist_add_test() {
+    let mut b: BkTree<char> = BkTree::new(Some(modified_jaccard_dist));
+    b.add("foo".chars().collect());
+    assert_eq!(b._root.word, Some("foo".chars().collect()));
+
+    b.add("bar".chars().collect());
+    assert_eq!(b._root.children[100].word, Some("bar".chars().collect()));
+}
+
+#[test]
+fn hamming_dist_add_test() {
+    let mut b: BkTree<char> = BkTree::new(Some(hamming_dist));
+    b.add("0".chars().collect());
+    assert_eq!(b._root.word, Some("0".chars().collect()));
+
+    b.add("f".chars().collect());
+    assert_eq!(b._root.children[1].word, Some("f".chars().collect()));
 }
