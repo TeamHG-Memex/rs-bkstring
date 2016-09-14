@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::cmp::{min, max};
 
-const MAX_PERCENT_DIST: usize = 100;
+const MAX_PERCENT_DIST: usize = 1_000_000;
 
 fn run_func<T>(func: &Fn(Vec<T>, Vec<T>) -> usize, first: Vec<T>, second: Vec<T>, minimum: usize, maximum: usize) -> usize {
     let len1 = first.len();
@@ -221,22 +221,22 @@ fn hamming_dist_test() {
 
 #[test]
 fn jaccard_dist_test() {
-    assert_eq!(jaccard_dist(convert_str("foo"), convert_str("bar")), 100);
-    assert_eq!(jaccard_dist(convert_str("bar"), convert_str("ba")), 34);
-    assert_eq!(jaccard_dist(convert_str("bar"), convert_str("baz")), 50);
+    assert_eq!(jaccard_dist(convert_str("foo"), convert_str("bar")), 1_000_000);
+    assert_eq!(jaccard_dist(convert_str("bar"), convert_str("ba")), 333_334);
+    assert_eq!(jaccard_dist(convert_str("bar"), convert_str("baz")), 500_000);
     assert_eq!(jaccard_dist(convert_str("GG"), convert_str("GGGG")), 0);
     assert_eq!(jaccard_dist(convert_str("GGGG"), convert_str("GG")), 0);
-    assert_eq!(jaccard_dist(convert_str("fooba 1234"), convert_str("fooba1234")), 12);
+    assert_eq!(jaccard_dist(convert_str("fooba 1234"), convert_str("fooba1234")), 111_112);
 }
 
 #[test]
 fn modified_jaccard_dist_test() {
-    assert_eq!(modified_jaccard_dist(convert_str("foo"), convert_str("bar")), 100);
-    assert_eq!(modified_jaccard_dist(convert_str("bar"), convert_str("ba")), 34);
-    assert_eq!(modified_jaccard_dist(convert_str("bar"), convert_str("baz")), 50);
-    assert_eq!(modified_jaccard_dist(convert_str("GG"), convert_str("GGGG")), 50);
-    assert_eq!(modified_jaccard_dist(convert_str("GGGG"), convert_str("GG")), 50);
-    assert_eq!(modified_jaccard_dist(convert_str("fooba 1234"), convert_str("fooba1234")), 10);
+    assert_eq!(modified_jaccard_dist(convert_str("foo"), convert_str("bar")), 1_000_000);
+    assert_eq!(modified_jaccard_dist(convert_str("bar"), convert_str("ba")), 333_334);
+    assert_eq!(modified_jaccard_dist(convert_str("bar"), convert_str("baz")), 500_000);
+    assert_eq!(modified_jaccard_dist(convert_str("GG"), convert_str("GGGG")), 500_000);
+    assert_eq!(modified_jaccard_dist(convert_str("GGGG"), convert_str("GG")), 500_000);
+    assert_eq!(modified_jaccard_dist(convert_str("fooba 1234"), convert_str("fooba1234")), 100_000);
 }
 
 #[test]
