@@ -3,32 +3,32 @@ extern crate bkstring;
 #[cfg(bkdist_tests)]
 mod bkdist_tests {
 
-use bkstring::bkdist::{l_dist, mod_j_dist, jaro_dist, hex_ham_dist};
+use bkstring::bkdist::{levenshtein_dist, modified_jaccard_dist, jaro_dist, hex_ham_dist};
 
 
 #[test]
-fn l_dist_test_samples() {
-    assert_eq!(l_dist("foo".to_string(), "food".to_string()), 1);
-    assert_eq!(l_dist("foo".to_string(), "bar".to_string()), 3);
-    assert_eq!(l_dist("foo".to_string(), "foe".to_string()), 1);
+fn levenshtein_dist_test_samples() {
+    assert_eq!(levenshtein_dist("foo".to_string(), "food".to_string()), 1);
+    assert_eq!(levenshtein_dist("foo".to_string(), "bar".to_string()), 3);
+    assert_eq!(levenshtein_dist("foo".to_string(), "foe".to_string()), 1);
 }
 
 #[test]
-fn l_dist_test_unicode() {
-    assert_eq!(l_dist("johndoe1".to_string(), "johndoe\u{263a}".to_string()), 1);
-    assert_eq!(l_dist("johndoe1".to_string(), "johndoe\u{263a}1".to_string()), 1);
-    assert_eq!(l_dist("johndoe1".to_string(), "johndoe\u{263a}\u{263a}".to_string()), 2);
-    assert_eq!(l_dist("johndoe\u{263a}".to_string(), "johndoe1".to_string()), 1);
+fn levenshtein_dist_test_unicode() {
+    assert_eq!(levenshtein_dist("johndoe1".to_string(), "johndoe\u{263a}".to_string()), 1);
+    assert_eq!(levenshtein_dist("johndoe1".to_string(), "johndoe\u{263a}1".to_string()), 1);
+    assert_eq!(levenshtein_dist("johndoe1".to_string(), "johndoe\u{263a}\u{263a}".to_string()), 2);
+    assert_eq!(levenshtein_dist("johndoe\u{263a}".to_string(), "johndoe1".to_string()), 1);
 }
 
 #[test]
-fn mod_j_dist_test() {
-    assert_eq!(mod_j_dist("foo".to_string(), "bar".to_string()), 100);
-    assert_eq!(mod_j_dist("bar".to_string(), "ba".to_string()), 34);
-    assert_eq!(mod_j_dist("bar".to_string(), "baz".to_string()), 50);
-    assert_eq!(mod_j_dist("GG".to_string(), "GGGG".to_string()), 50);
-    assert_eq!(mod_j_dist("GGGG".to_string(), "GG".to_string()), 50);
-    assert_eq!(mod_j_dist("fooba 1234".to_string(), "fooba1234".to_string()), 10);
+fn modified_jaccard_dist_test() {
+    assert_eq!(modified_jaccard_dist("foo".to_string(), "bar".to_string()), 100);
+    assert_eq!(modified_jaccard_dist("bar".to_string(), "ba".to_string()), 34);
+    assert_eq!(modified_jaccard_dist("bar".to_string(), "baz".to_string()), 50);
+    assert_eq!(modified_jaccard_dist("GG".to_string(), "GGGG".to_string()), 50);
+    assert_eq!(modified_jaccard_dist("GGGG".to_string(), "GG".to_string()), 50);
+    assert_eq!(modified_jaccard_dist("fooba 1234".to_string(), "fooba1234".to_string()), 10);
 }
 
 #[test]
