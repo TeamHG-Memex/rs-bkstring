@@ -1,4 +1,5 @@
 #[macro_use] extern crate cpython;
+extern crate pyo3;
 
 pub mod bktree;
 pub mod bknode;
@@ -8,9 +9,11 @@ use cpython::{PyObject, PyResult, Python, PyList, ToPyObject, PythonObject};
 
 use std::cell;
 
+#[py::modinit(bktree)]
 py_module_initializer!(bktree, initbktree, PyInit_bktree, |py, m| {
     m.add(py, "__doc__", "A BK Tree library written in Rust with Python bindings.")?;
     m.add_class::<BkTree>(py)?;
+
     Ok(())
 });
 

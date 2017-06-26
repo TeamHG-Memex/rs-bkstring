@@ -6,8 +6,10 @@ authors = ["Brian Mackintosh <bcmackintosh@gmail.com>",
 
 [lib]
 name = "bktree"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 cpython = { git = "https://github.com/dgrunwald/rust-cpython.git" }
+pyo3 = { git = "https://github.com/PyO3/PyO3.git" }
+libc = "0.2.24"
 rand = "*"
