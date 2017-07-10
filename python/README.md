@@ -23,7 +23,7 @@ After installing dependencies, you can install this package:
 
     >>> from bktree import BkTree
     >>> t = BkTree()
-    >>> t.add_list(['foo1', 'foo2', 'bar1', 'bar2')
+    >>> t.add_list(['foo1', 'foo2', 'bar1', 'bar2'])
     >>> t.search('foo', 1)
     ['foo1', 'foo2']
     >>> t.search('bar', 1)
