@@ -10,6 +10,8 @@ setup(
         name='bktree',
         path='../Cargo.toml',
         binding=Binding.PyO3)],
-    packages=['bktree'],
+    install_requires=[
+        'setuptools_rust'
+    ],
     zip_safe=False
 )
