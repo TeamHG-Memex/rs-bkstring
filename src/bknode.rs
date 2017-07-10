@@ -74,7 +74,7 @@ pub type BkNode<T> = _BkNode<T>;
 
 pub struct _PyBkNode {
     pub word: PyObject,
-    pub dist: usize,
+    pub dist: f64,
     pub children: Vec<_PyBkNode>,
 }
 
@@ -88,7 +88,7 @@ impl Eq for _PyBkNode {}
 
 impl Ord for _PyBkNode {
     fn cmp(&self, other: &_PyBkNode) -> Ordering {
-        self.dist.cmp(&other.dist)
+        self.dist.partial_cmp(&other.dist).unwrap()
     }
 }
 
@@ -112,7 +112,7 @@ impl _PyBkNode {
         let curr_dist = use_function(dist, self.word.clone_ref(py), word.clone_ref(py));
 
         // Binary search returns the index of the search value, or the index where, if the value is inserted, it will retain ordering.
-        match self.children.binary_search_by(|curr_node| curr_node.dist.cmp(&curr_dist)) {
+        match self.children.binary_search_by(|curr_node| curr_node.dist.partial_cmp(&curr_dist).unwrap()) {
             Ok(child_idx) => {
                 self.children[child_idx].add(word.clone_ref(py), dist);
             },
@@ -136,7 +136,7 @@ impl Default for _PyBkNode {
 
         _PyBkNode {
             word: py.None(),
-            dist: 0,
+            dist: 0.0,
             children: vec![]
         }
     }

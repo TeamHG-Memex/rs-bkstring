@@ -1,4 +1,5 @@
 use std::default::Default;
+use std::f64::MIN_POSITIVE;
 
 use bknode::{BkNode, PyBkNode};
 use dist::*;
@@ -113,7 +114,7 @@ impl _PyBkTree {
         }
     }
 
-    fn r_search(&self, node: &PyBkNode, word: PyObject, dist: usize, s_list: &mut Vec<PyObject>) {
+    fn r_search(&self, node: &PyBkNode, word: PyObject, dist: f64, s_list: &mut Vec<PyObject>) {
         let gil = Python::acquire_gil();
         let py = gil.python();
 
@@ -124,18 +125,18 @@ impl _PyBkTree {
             true => curr_dist - dist,
             false => {
                 s_list.push(curr_word.clone_ref(py));
-                0
+                0.0
             }
         };
 
-        let max_dist = curr_dist + dist + 1;
+        let max_dist = curr_dist + dist + MIN_POSITIVE;
 
-        let min_idx = match node.children.binary_search_by(|probe| probe.dist.cmp(&min_dist)) {
+        let min_idx = match node.children.binary_search_by(|probe| probe.dist.partial_cmp(&min_dist).unwrap()) {
             Ok(idx) => idx,
             Err(idx) => idx
         };
 
-        let max_idx = match node.children.binary_search_by(|probe| probe.dist.cmp(&max_dist)) {
+        let max_idx = match node.children.binary_search_by(|probe| probe.dist.partial_cmp(&max_dist).unwrap()) {
             Ok(idx) => idx,
             Err(idx) => idx
         };
@@ -145,7 +146,7 @@ impl _PyBkTree {
         }
     }
 
-    pub extern fn search(&self, word: PyObject, dist: usize) -> Vec<PyObject> {
+    pub extern fn search(&self, word: PyObject, dist: f64) -> Vec<PyObject> {
         let mut results: Vec<PyObject> = vec![];
 
         self.r_search(&self._root, word, dist, &mut results);

@@ -47,7 +47,7 @@ py_class!(class BkTree |py| {
         Ok(py.None())
     }
 
-    def search(&self, word: PyObject, dist: usize) -> PyResult<PyList> {
+    def search(&self, word: PyObject, dist: f64) -> PyResult<PyList> {
         let results = self.tree(py).borrow().search(word, dist);
 
         Ok(PyList::new(py, &results[..]))

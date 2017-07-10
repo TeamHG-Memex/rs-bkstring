@@ -49,7 +49,7 @@ pub fn vec_to_py_string(py: Python, word: &Vec<char>) -> PyObject {
     return word.iter().cloned().collect::<String>().to_py_object(py).into_object();
 }
 
-pub fn use_function(func: &PyObject, arg1: PyObject, arg2: PyObject) -> usize {
+pub fn use_function(func: &PyObject, arg1: PyObject, arg2: PyObject) -> f64 {
     let gil = Python::acquire_gil();
     let py = gil.python();
 
@@ -60,7 +60,7 @@ pub fn use_function(func: &PyObject, arg1: PyObject, arg2: PyObject) -> usize {
     // let py_arg1 = vec_to_py_string(py, &arg1);
     // let py_arg2 = vec_to_py_string(py, &arg2);
 
-    return func.call(py, PyTuple::new(py, &[arg1, arg2]), None).unwrap().extract::<usize>(py).unwrap();
+    return func.call(py, PyTuple::new(py, &[arg1, arg2]), None).unwrap().extract::<f64>(py).unwrap();
 }
 
 fn from_string(py: Python, arg: PyObject) -> ConversionType {
